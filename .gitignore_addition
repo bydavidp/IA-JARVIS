@@ -1,0 +1,6 @@
+# Voice Assistant Specific
+data/voice_print.pkl
+logs/
+__pycache__/
+*.pyc
+.env.local
