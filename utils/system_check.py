@@ -75,6 +75,7 @@ def check_dependencies() -> List[Tuple[str, bool, str]]:
         'SpeechRecognition': 'speech_recognition',
         'pyaudio': 'pyaudio',
         'pyttsx3': 'pyttsx3',
+        'pocketsphinx': 'pocketsphinx',
         # resemblyzer is optional; we'll not include in required list
         'numpy': 'numpy',
         'scipy': 'scipy',
@@ -86,6 +87,7 @@ def check_dependencies() -> List[Tuple[str, bool, str]]:
         ('SpeechRecognition', 'Speech recognition'),
         ('pyaudio', 'Audio I/O'),
         ('pyttsx3', 'Text-to-speech'),
+        ('pocketsphinx', 'Offline speech recognition'),
         ('numpy', 'Numerical computing'),
         ('scipy', 'Scientific computing'),
         ('loguru', 'Logging'),

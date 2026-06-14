@@ -35,6 +35,7 @@ class SpeechToText:
     def listen(self, timeout: float = 5.0, phrase_time_limit: float = 10.0) -> Optional[str]:
         """
         Listen for speech and convert to text.
+        Uses offline recognition (Sphinx) by default to avoid API charges.
 
         Args:
             timeout: Seconds to wait for speech start
@@ -53,25 +54,21 @@ class SpeechToText:
                     phrase_time_limit=phrase_time_limit
                 )
 
-            logger.info("Processing speech...")
-            # Try Google Web Speech API (free tier)
-            text = self.recognizer.recognize_google(
-                audio,
-                language=self.language
-            )
-            logger.info(f"Recognized: {text}")
-            return text
+            logger.info("Processing speech with offline recognition...")
+            # Try offline recognition first (Sphinx) to avoid API charges
+            text = self._recognize_offline(audio)
+            if text:
+                logger.info(f"Recognized (offline): {text}")
+                return text
+
+            # If offline fails, we could optionally try online as fallback
+            # But per user request to avoid APIs that might charge, we'll skip online fallback
+            logger.warning("Offline recognition failed - no online fallback to avoid potential charges")
+            return None
 
         except sr.WaitTimeoutError:
             logger.info("Listening timeout - no speech detected")
             return None
-        except sr.UnknownValueError:
-            logger.warning("Could not understand audio")
-            return None
-        except sr.RequestError as e:
-            logger.error(f"Speech recognition service error: {e}")
-            # Fallback to offline recognition if available
-            return self._recognize_offline(audio) if 'audio' in locals() else None
         except Exception as e:
             logger.error(f"Unexpected error in speech recognition: {e}")
             return None

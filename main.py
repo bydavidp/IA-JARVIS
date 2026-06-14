@@ -10,9 +10,15 @@ import logging
 import signal
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent / "backend"))
 from typing import Optional
 from loguru import logger
+
+# Load environment variables from .env file as early as possible
+from dotenv import load_dotenv
+load_dotenv()  # This loads .env from the current working directory
+
+# Add backend to Python path so we can import app.* modules
+sys.path.insert(0, str(Path(__file__).parent / "backend"))
 
 # Import voice components
 from voice.wake_word import WakeWordDetector

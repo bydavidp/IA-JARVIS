@@ -4,13 +4,13 @@
 This is a local, voice-activated version of JARVIS that transforms the existing web-based backend into a premium desktop assistant with voice capabilities.
 
 ## Features
-- 🎤 **Voice Activation**: Wake word detection ("Jarvis") using Porcupine (requires access key)
+- 🎤 **Voice Activation**: Wake word detection ("Jarvis") using Porcupine (requires free access key)
 - 🔒 **Voice Authentication**: Only responds to authorized user's voice (optional, requires resemblyzer)
-- 🎧 **Speech Recognition**: High-accuracy speech-to-text
+- 🎧 **Speech Recognition**: Offline speech-to-text using Sphinx (no API charges)
 - 🔊 **Text-to-Speech**: Natural sounding responses
-- 🧠 **AI Powered**: Leverages existing agent system and Ollama LLM
+- 🧠 **AI Powered**: Leverages existing agent system and Ollama LLM (local)
 - 🔐 **Security Maintained**: All existing permissions and restrictions preserved
-- 💻 **Local Only**: No web deployment - runs completely on your machine
+- 💻 **Fully Local**: No web deployment - all processing occurs on your machine
 
 ## Components
 
@@ -21,8 +21,8 @@ This is a local, voice-activated version of JARVIS that transforms the existing 
 - **Requires**: Porcupine access key from Picovoice
 
 ### 2. Speech Recognition (`voice/speech_to_text.py`)
-- Uses SpeechRecognition library with Google Web Speech API
-- Fallback to offline recognition (Sphinx)
+- Uses SpeechRecognition library with offline recognition (Sphinx) as primary
+- Completely offline operation to avoid any potential API charges
 - Configurable timeouts and language support
 
 ### 3. Text-to-Speech (`voice/text_to_speech.py`)
@@ -50,10 +50,11 @@ This is a local, voice-activated version of JARVIS that transforms the existing 
 ```bash
 pip install -r requirements_voice.txt
 ```
+Note: This now includes pocketsphinx for offline speech recognition to avoid any potential API charges.
 
 ### 2. Install System Dependencies
 #### For Wake Word Detection (Mandatory)
-- Sign up for a free access key at [Picovoice](https://picovoice.ai/account/)
+- Sign up for a **free** access key at [Picovoice](https://picovoice.ai/account/) (free for personal use)
 - Edit the `.env` file in the project root and replace `your_access_key_here` with your actual access key:
   ```
   PORCUPINE_ACCESS_KEY=your_actual_access_key_from_picovoice
@@ -163,30 +164,38 @@ JARVIS Voice Assistant
 
 ### Common Issues
 1. **"Porcupine access key not found"**
-   - Get a free access key from [Picovoice](https://picovoice.ai/account/)
+   - Get a free access key from [Picovoice](https://picovoice.ai/account/) (free for personal use)
    - Set it in the `.env` file: `PORCUPINE_ACCESS_KEY=your_key_here`
 
 2. **"Failed to initialize Porcupine"**
    - Ensure your access key is valid and has permission to use the "jarvis" keyword
 
-3. **Microphone not working**
+3. **Speech recognition not working**
+   - The system now uses offline speech recognition (Sphinx) by default to avoid API charges
+   - If recognition accuracy is poor, speak clearly and close to the microphone
+   - You can adjust sensitivity in `voice/speech_to_text.py` if needed
+
+4. **Microphone not working**
    - Check permissions in Windows Settings > Privacy > Microphone
    - Try different sample rates in `enroll_voice.py`
 
-4. **Ollama not responding**
+5. **Ollama not responding**
    - Ensure Ollama is running: `ollama serve`
    - Check models are installed: `ollama list`
 
-5. **Voice authentication not available**
+6. **Voice authentication not available**
    - Install Microsoft C++ Build Tools and reinstall resemblyzer
    - See enrollment script for detailed instructions
 
-### Optional: Using JARVIS Without Voice Authentication
-If you cannot install resemblyzer:
-1. Ignore the voice authentication warnings
-2. The assistant will still respond to voice commands
-3. **Anyone saying "Jarvis" will be able to activate it** (reduced security)
-4. To use this mode, simply do not run `enroll_voice.py` and the system will run with a warning
+### Addressing API Cost Concerns
+To ensure no unexpected charges:
+- **Wake word detection**: Uses Porcupine with free access key (personal use is free)
+- **Speech recognition**: Now uses offline Sphinx recognition exclusively - no external APIs
+- **Text-to-speech**: Uses pyttsx3 - completely offline
+- **AI processing**: Uses local Ollama instance - no external APIs
+- **Voice authentication**: Optional and offline once installed
+
+All components now run locally after initial setup, eliminating concerns about ongoing API charges.
 
 ## Future Enhancements
 - [ ] Local Whisper.cpp for completely offline STT
